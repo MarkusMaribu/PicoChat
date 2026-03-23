@@ -4,7 +4,7 @@ PicoChat is meant to recreate the look and feel of PictoChat found on the Ninten
 Featuring both local and online chatrooms, you can chat and send messages to your nearby friends, or other people online.
 The app is optimized to be used on both single-screen and dual-screen devices, with full controller support.
 
+![Landscape screenshot](https://github.com/user-attachments/assets/1e6e1d28-1b2d-4fa7-8e4f-b281f02284f3)
+
 (This app does not have any affiliation with Nintendo)
-
-
 This app is coded using Claude Opus 4.6. No AI generated assets have been used.
