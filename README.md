@@ -7,4 +7,4 @@ The app is optimized to be used on both single-screen and dual-screen devices, w
 (This app does not have any affiliation with Nintendo)
 
 
-This app is coded using Claude Opus 4.6
+This app is coded using Claude Opus 4.6. No AI generated assets have been used.
