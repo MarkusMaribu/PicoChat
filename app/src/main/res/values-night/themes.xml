@@ -1,0 +1,17 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.PicoChat" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@color/ds_teal_border</item>
+        <item name="colorPrimaryVariant">@color/ds_dark_header</item>
+        <item name="colorOnPrimary">@color/ds_white</item>
+        <item name="colorSecondary">@color/ds_green_text</item>
+        <item name="colorOnSecondary">@color/ds_black</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:fontFamily">@font/cozette_vector</item>
+    </style>
+
+    <style name="Theme.PicoChat.DarkWindow" parent="Theme.PicoChat">
+        <item name="android:windowBackground">@color/ds_black</item>
+    </style>
+</resources>

@@ -1,0 +1,1196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ds_black">
+
+    <com.markusmaribu.picochat.ui.ScaleLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <!-- ====== ROOM SELECTION CONTENT ====== -->
+        <LinearLayout
+            android:id="@+id/roomSelectionContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_gray_stripe"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/roomSelHeader"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="11"
+                android:background="@drawable/bg_room_header"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:text="@string/choose_room"
+                android:textColor="@color/ds_black"
+                android:textSize="@dimen/ds_body_text_size" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+            android:layout_weight="76"
+            android:background="@android:color/transparent"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+                <LinearLayout
+                    android:id="@+id/roomListContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:paddingVertical="12dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.7">
+
+                    <include
+                        android:id="@+id/roomRowA"
+                        layout="@layout/item_room_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <include
+                        android:id="@+id/roomRowB"
+                        layout="@layout/item_room_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <include
+                        android:id="@+id/roomRowC"
+                        layout="@layout/item_room_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <include
+                        android:id="@+id/roomRowD"
+                        layout="@layout/item_room_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/cornerHighlight"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintStart_toStartOf="@id/roomListContainer"
+                    app:layout_constraintEnd_toEndOf="@id/roomListContainer"
+                    app:layout_constraintTop_toTopOf="@id/roomListContainer" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/roomSelBottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="13"
+                android:background="@color/ds_key_bg">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.7">
+
+                    <TextView
+                        android:id="@+id/btnOptions"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_options"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                    <TextView
+                        android:id="@+id/btnJoin"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="24dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_join"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <!-- ====== OPTIONS CONTENT ====== -->
+        <LinearLayout
+            android:id="@+id/optionsContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_gray_stripe"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/optionsHeader"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="11"
+                android:background="@drawable/bg_room_header"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:text="@string/options_title"
+                android:textColor="@color/ds_black"
+                android:textSize="@dimen/ds_body_text_size" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+            android:layout_weight="76"
+            android:background="@android:color/transparent"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+                <LinearLayout
+                    android:id="@+id/optionsListContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.82"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.5">
+
+                    <TextView
+                        android:id="@+id/btnName"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_name"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                    <TextView
+                        android:id="@+id/btnColor"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_color"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                    <TextView
+                        android:id="@+id/btnDisplaySetup"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_display_setup"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                    <TextView
+                        android:id="@+id/btnExportChat"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_export_chat"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/cornerHighlightOptions"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintStart_toStartOf="@id/optionsListContainer"
+                    app:layout_constraintEnd_toEndOf="@id/optionsListContainer"
+                    app:layout_constraintTop_toTopOf="@id/optionsListContainer" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/optionsBottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="13"
+                android:background="@color/ds_key_bg">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.7">
+
+                    <TextView
+                        android:id="@+id/btnBack"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_back"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                    <TextView
+                        android:id="@+id/btnCredits"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="24dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_credits"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <!-- ====== NAME INPUT CONTENT ====== -->
+        <LinearLayout
+            android:id="@+id/nameInputContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_gray_stripe"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/nameInputHeader"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="11"
+                android:background="@drawable/bg_room_header"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:text="@string/enter_name_title"
+                android:textColor="@color/ds_black"
+                android:textSize="@dimen/ds_body_text_size" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+            android:layout_weight="76"
+            android:background="@android:color/transparent">
+
+                <com.markusmaribu.picochat.ui.NameInputBoxes
+                    android:id="@+id/nameInputBoxes"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.14"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/nameKeyboardArea"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_margin="6dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.52"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/nameInputBoxes"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:layout_constraintWidth_percent="0.82">
+
+                    <LinearLayout
+                        android:layout_width="23dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="3dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:paddingVertical="2dp">
+
+                        <TextView
+                            android:id="@+id/nameKbLatin"
+                            android:layout_width="23dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_tool_button"
+                            android:fontFamily="@font/cozette_vector"
+                            android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:text="A"
+                            android:textColor="@color/ds_black"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/nameKbAccented"
+                            android:layout_width="23dp"
+                            android:layout_height="0dp"
+                            android:layout_marginTop="1dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_tool_button"
+                            android:fontFamily="@font/cozette_vector"
+                            android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:text="À"
+                            android:textColor="@color/ds_black"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/nameKbKatakana"
+                            android:layout_width="23dp"
+                            android:layout_height="0dp"
+                            android:layout_marginTop="1dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_tool_button"
+                            android:fontFamily="@font/cozette_vector"
+                            android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:text="あ"
+                            android:textColor="@color/ds_black"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/nameKbSymbols"
+                            android:layout_width="23dp"
+                            android:layout_height="0dp"
+                            android:layout_marginTop="1dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_tool_button"
+                            android:fontFamily="@font/cozette_vector"
+                            android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:text="\@"
+                            android:textColor="@color/ds_black"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/nameKbEmoji"
+                            android:layout_width="23dp"
+                            android:layout_height="0dp"
+                            android:layout_marginTop="1dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_tool_button"
+                            android:fontFamily="@font/cozette_vector"
+                            android:gravity="center"
+                            android:includeFontPadding="false"
+                            android:text="😊"
+                            android:textColor="@color/ds_black"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:id="@+id/nameKeyboardContainer"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_inner_container"
+                        android:clipChildren="true"
+                        android:clipToOutline="true"
+                        android:padding="3dp">
+
+                        <com.markusmaribu.picochat.ui.SoftKeyboardView
+                            android:id="@+id/nameKeyboard"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/nameKbButtons"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingStart="26dp"
+                    app:layout_constraintEnd_toEndOf="@id/nameKeyboardArea"
+                    app:layout_constraintStart_toStartOf="@id/nameKeyboardArea"
+                    app:layout_constraintTop_toBottomOf="@id/nameKeyboardArea">
+
+                    <TextView
+                        android:id="@+id/btnKbCancel"
+                        android:layout_width="0dp"
+                        android:layout_height="28dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_kb_action_button_left"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="Cancel"
+                        android:textColor="@color/ds_black"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/btnKbConfirm"
+                        android:layout_width="0dp"
+                        android:layout_height="28dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_kb_action_button_right"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="Confirm"
+                        android:textColor="@color/ds_black"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/nameInputBottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="13"
+                android:background="@color/ds_key_bg">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.7">
+
+                    <TextView
+                        android:id="@+id/btnNameQuit"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_name_quit"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                    <TextView
+                        android:id="@+id/btnNameConfirm"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="24dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_name_confirm"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <!-- ====== COLOR PICKER CONTENT ====== -->
+        <LinearLayout
+            android:id="@+id/colorContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_gray_stripe"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/colorHeader"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="11"
+                android:background="@drawable/bg_room_header"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:text="@string/choose_color_title"
+                android:textColor="@color/ds_black"
+                android:textSize="@dimen/ds_body_text_size" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="76"
+                android:background="@android:color/transparent"
+                android:padding="8dp">
+
+                <FrameLayout
+                    android:id="@+id/colorGridBox"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/bg_color_box"
+                    android:padding="6dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toStartOf="@+id/colorPreviewBox"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.48">
+
+                    <com.markusmaribu.picochat.ui.ColorGridView
+                        android:id="@+id/colorGrid"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/colorPreviewBox"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_color_box"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/colorGridBox"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.30">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="24dp"
+                        android:layout_gravity="top"
+                        android:background="@drawable/bg_color_preview_overlay" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="8dp">
+
+                        <TextView
+                            android:id="@+id/colorPreviewLabel"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/cozette_vector"
+                            android:gravity="center"
+                            android:text="@string/choose_color_title"
+                            android:textColor="@color/ds_black"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <View
+                            android:id="@+id/colorPreviewSwatch"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_margin="8dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintDimensionRatio="1:1"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/colorPreviewLabel"
+                            app:layout_constraintWidth_percent="0.45" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </FrameLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/colorBottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="13"
+                android:background="@color/ds_key_bg">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.7">
+
+                    <TextView
+                        android:id="@+id/btnColorCancel"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_color_cancel"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                    <TextView
+                        android:id="@+id/btnColorConfirm"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="24dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_color_confirm"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <!-- ====== DISPLAY SETUP CONTENT ====== -->
+        <LinearLayout
+            android:id="@+id/displaySetupContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_gray_stripe"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/displaySetupHeader"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="11"
+                android:background="@drawable/bg_room_header"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:text="@string/display_setup_title"
+                android:textColor="@color/ds_black"
+                android:textSize="@dimen/ds_body_text_size" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+            android:layout_weight="76"
+            android:background="@android:color/transparent"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+                <LinearLayout
+                    android:id="@+id/displaySetupListContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.41"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.5">
+
+                    <TextView
+                        android:id="@+id/btnSwapViews"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_swap_views"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                    <TextView
+                        android:id="@+id/btnLockRotation"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_lock_rotation"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/cornerHighlightDisplaySetup"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintStart_toStartOf="@id/displaySetupListContainer"
+                    app:layout_constraintEnd_toEndOf="@id/displaySetupListContainer"
+                    app:layout_constraintTop_toTopOf="@id/displaySetupListContainer" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/displaySetupBottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="13"
+                android:background="@color/ds_key_bg">
+
+                <TextView
+                    android:id="@+id/btnDisplaySetupBack"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/bg_quit_button"
+                    android:fontFamily="@font/cozette_vector"
+                    android:gravity="center"
+                    android:text="@string/btn_back"
+                    android:textColor="@color/ds_black"
+                    android:textSize="@dimen/ds_body_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.35" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <!-- ====== EXPORT CHAT CONTENT ====== -->
+        <LinearLayout
+            android:id="@+id/exportChatContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_gray_stripe"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/exportChatHeader"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="11"
+                android:background="@drawable/bg_room_header"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:text="@string/export_chat_title"
+                android:textColor="@color/ds_black"
+                android:textSize="@dimen/ds_body_text_size" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="76"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/exportConfirmText"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/cozette_vector"
+                    android:gravity="center"
+                    android:paddingHorizontal="24dp"
+                    android:textColor="@color/ds_black"
+                    android:textSize="@dimen/ds_body_text_size" />
+
+                <LinearLayout
+                    android:id="@+id/exportPreviewRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="8dp">
+
+                    <TextView
+                        android:id="@+id/btnExportScrollDown"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:paddingVertical="4dp"
+                        android:text="@string/btn_export_scroll_down"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                    <ImageView
+                        android:id="@+id/exportPreviewImage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_weight="3"
+                        android:adjustViewBounds="true"
+                        android:background="@color/ds_white"
+                        android:scaleType="fitCenter" />
+
+                    <TextView
+                        android:id="@+id/btnExportScrollUp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:paddingVertical="4dp"
+                        android:text="@string/btn_export_scroll_up"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/exportHintText"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/cozette_vector"
+                    android:gravity="center"
+                    android:paddingHorizontal="24dp"
+                    android:text="@string/export_scroll_hint"
+                    android:textColor="@color/ds_black"
+                    android:textSize="@dimen/ds_body_text_size" />
+
+                <ProgressBar
+                    android:id="@+id/exportProgressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="32dp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/exportChatBottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="13"
+                android:background="@color/ds_key_bg">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.7">
+
+                    <TextView
+                        android:id="@+id/btnExportNo"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_export_no"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                    <TextView
+                        android:id="@+id/btnExportYes"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="24dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_export_yes"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <!-- ====== CREDITS CONTENT ====== -->
+        <LinearLayout
+            android:id="@+id/creditsContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_gray_stripe"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/creditsHeader"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="11"
+                android:background="@drawable/bg_room_header"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:text="@string/credits_title"
+                android:textColor="@color/ds_black"
+                android:textSize="@dimen/ds_body_text_size" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="76"
+                android:paddingVertical="12dp">
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/bg_color_box"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.7">
+
+                    <TextView
+                        android:id="@+id/creditsText"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="6sp"
+                        android:autoSizeMaxTextSize="16sp"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:text="Cozette Font\nCopyright (c) the-moonwitch\nLicensed under MIT\n\nPress Start 2P Font\nCopyright 2012 Cody Boisclair\nLicensed under SIL OFL 1.1\n\nThis app is not affiliated with\nor endorsed by Nintendo."
+                        android:textColor="@color/ds_black" />
+
+                </FrameLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/creditsBottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="13"
+                android:background="@color/ds_key_bg">
+
+                <TextView
+                    android:id="@+id/btnCreditsBack"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@drawable/bg_quit_button"
+                    android:fontFamily="@font/cozette_vector"
+                    android:gravity="center"
+                    android:text="@string/btn_credits_back"
+                    android:textColor="@color/ds_black"
+                    android:textSize="@dimen/ds_body_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.35" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <!-- ====== CONNECTING CONTENT ====== -->
+        <LinearLayout
+            android:id="@+id/connectingContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_gray_stripe"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/connectingHeader"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="11"
+                android:background="@drawable/bg_room_header"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:text="@string/connecting_title"
+                android:textColor="@color/ds_black"
+                android:textSize="@dimen/ds_body_text_size" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="76">
+
+                <ImageView
+                    android:id="@+id/connectingAnimation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:scaleX="0.5"
+                    android:scaleY="0.5"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/internet_loading_1" />
+
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <View
+                android:id="@+id/connectingBottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="13"
+                android:background="@color/ds_key_bg" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/presentationOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:background="@color/ds_gray_stripe"
+            android:visibility="gone" />
+
+    </com.markusmaribu.picochat.ui.ScaleLayout>
+
+</FrameLayout>

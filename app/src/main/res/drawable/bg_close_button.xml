@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Shadow (bottom-right) -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FF888888" />
+        </shape>
+    </item>
+    <!-- Highlight (top-left) -->
+    <item android:bottom="2dp" android:right="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFECECEC" />
+        </shape>
+    </item>
+    <!-- Key face -->
+    <item android:bottom="2dp" android:left="2dp" android:right="2dp" android:top="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFD0D0D0" />
+        </shape>
+    </item>
+</layer-list>

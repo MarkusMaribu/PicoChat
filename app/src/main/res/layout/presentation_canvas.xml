@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ds_black">
+
+    <com.markusmaribu.picochat.ui.ScaleLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_white">
+
+            <View
+                android:id="@+id/topBar"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/ds_white"
+                app:layout_constraintBottom_toBottomOf="@id/btnClose"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/toolStrip"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/peerNamesContainer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="end|center_vertical"
+                android:orientation="horizontal"
+                android:paddingEnd="2dp"
+                app:layout_constraintBottom_toBottomOf="@id/topBar"
+                app:layout_constraintEnd_toStartOf="@id/btnClose"
+                app:layout_constraintStart_toEndOf="@id/toolStrip"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/btnClose"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_margin="2dp"
+                android:background="@drawable/bg_close_button"
+                android:contentDescription="Close"
+                android:padding="3dp"
+                android:src="@drawable/ic_close"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/containerBg"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/bg_bottom_container"
+                android:clipToOutline="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/toolStrip"
+                app:layout_constraintTop_toBottomOf="@id/btnClose" />
+
+            <LinearLayout
+                android:id="@+id/toolStrip"
+                android:layout_width="@dimen/ds_tool_strip_width"
+                android:layout_height="0dp"
+                android:background="@color/ds_white"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingVertical="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/btnScrollUp"
+                    android:layout_width="23dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_tool_button"
+                    android:contentDescription="Scroll up"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_arrow_up" />
+
+                <ImageView
+                    android:id="@+id/btnScrollDown"
+                    android:layout_width="23dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_tool_button"
+                    android:contentDescription="Scroll down"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_arrow_down" />
+
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="3dp"
+                    android:layout_marginVertical="2dp"
+                    android:background="@drawable/bg_dotted_separator"
+                    android:layerType="software" />
+
+                <ImageView
+                    android:id="@+id/btnPencil"
+                    android:layout_width="23dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_tool_button"
+                    android:contentDescription="@string/label_pencil"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_pencil" />
+
+                <ImageView
+                    android:id="@+id/btnEraser"
+                    android:layout_width="23dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_tool_button"
+                    android:contentDescription="@string/label_eraser"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_eraser" />
+
+                <ImageView
+                    android:id="@+id/btnPenThick"
+                    android:layout_width="23dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_tool_button"
+                    android:contentDescription="Thick pen"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_pen_thick" />
+
+                <ImageView
+                    android:id="@+id/btnPenThin"
+                    android:layout_width="23dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_tool_button"
+                    android:contentDescription="Thin pen"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_pen_thin" />
+
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="3dp"
+                    android:layout_marginVertical="2dp"
+                    android:background="@drawable/bg_dotted_separator"
+                    android:layerType="software" />
+
+                <TextView
+                    android:id="@+id/btnKbLatin"
+                    android:layout_width="23dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_tool_button"
+                    android:fontFamily="@font/cozette_vector"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="A"
+                    android:textColor="@color/ds_black"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/btnKbAccented"
+                    android:layout_width="23dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_tool_button"
+                    android:fontFamily="@font/cozette_vector"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="À"
+                    android:textColor="@color/ds_black"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/btnKbKatakana"
+                    android:layout_width="23dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_tool_button"
+                    android:fontFamily="@font/cozette_vector"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="あ"
+                    android:textColor="@color/ds_black"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/btnKbSymbols"
+                    android:layout_width="23dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_tool_button"
+                    android:fontFamily="@font/cozette_vector"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="\@"
+                    android:textColor="@color/ds_black"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/btnKbEmoji"
+                    android:layout_width="23dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_tool_button"
+                    android:fontFamily="@font/cozette_vector"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:text="😊"
+                    android:textColor="@color/ds_black"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/canvasFrame"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/bg_canvas_area"
+                android:clipChildren="true"
+                android:clipToPadding="false"
+                android:clipToOutline="true"
+                android:padding="2dp"
+                app:layout_constraintDimensionRatio="256:88"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/toolStrip"
+                app:layout_constraintTop_toBottomOf="@id/btnClose">
+
+                <com.markusmaribu.picochat.ui.PictoCanvasView
+                    android:id="@+id/pictoCanvas"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/canvasUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|start"
+                    android:background="@drawable/bg_nametag"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:fontFamily="@font/cozette_vector"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="3dp"
+                    android:textColor="@color/ds_white"
+                    android:textSize="@dimen/ds_username_text_size"
+                    tools:text="Markus" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/keyboardContainer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="6dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/bg_inner_container"
+                android:clipChildren="true"
+                android:clipToOutline="true"
+                android:padding="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/rightSidebar"
+                app:layout_constraintStart_toEndOf="@id/toolStrip"
+                app:layout_constraintTop_toBottomOf="@id/canvasFrame">
+
+                <com.markusmaribu.picochat.ui.SoftKeyboardView
+                    android:id="@+id/softKeyboard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/rightSidebar"
+                android:layout_width="@dimen/ds_right_sidebar_width"
+                android:layout_height="0dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/bg_inner_container"
+                android:clipChildren="true"
+                android:clipToOutline="true"
+                android:orientation="vertical"
+                android:padding="3dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/canvasFrame">
+
+                <LinearLayout
+                    android:id="@+id/btnSend"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_send_button_white"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_arrow_up" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/cozette_vector"
+                        android:text="@string/btn_send"
+                        android:textColor="@color/ds_black"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btnRetrieve"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="2dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_right_button"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_retrieve" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/cozette_vector"
+                        android:text="@string/btn_retrieve"
+                        android:textColor="@color/ds_black"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btnClear"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_right_button"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_clear" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/cozette_vector"
+                        android:text="@string/btn_clear"
+                        android:textColor="@color/ds_black"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/presentationOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:background="@color/ds_gray_stripe"
+            android:visibility="gone" />
+
+    </com.markusmaribu.picochat.ui.ScaleLayout>
+
+</FrameLayout>

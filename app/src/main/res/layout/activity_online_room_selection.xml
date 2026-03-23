@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ds_black"
+    tools:context=".ui.OnlineRoomSelectionActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHalf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <!-- ============================================================ -->
+    <!-- TOP SCREEN (4:3) - Chat History                              -->
+    <!-- ============================================================ -->
+    <com.markusmaribu.picochat.ui.ScaleLayout
+        android:id="@+id/topScreen"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/guidelineHalf"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/chatHistoryBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_gray_stripe">
+
+            <LinearLayout
+                android:id="@+id/topSidebar"
+                android:layout_width="@dimen/ds_tool_strip_width"
+                android:layout_height="0dp"
+                android:background="@color/ds_white"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="33dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_marginHorizontal="3dp"
+                    android:layout_marginTop="3dp"
+                    android:background="@drawable/bg_dotted_separator"
+                    android:layerType="software" />
+
+                <com.markusmaribu.picochat.ui.ScrollBarVisualizerView
+                    android:id="@+id/scrollBarVisualizer"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="6dp"
+                    android:layout_marginVertical="3dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_marginHorizontal="3dp"
+                    android:layout_marginBottom="3dp"
+                    android:background="@drawable/bg_dotted_separator"
+                    android:layerType="software" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="33dp" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/chatRecyclerView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@android:color/transparent"
+                android:clipToPadding="false"
+                android:paddingHorizontal="6dp"
+                android:paddingBottom="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/topSidebar"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.markusmaribu.picochat.ui.ScaleLayout>
+
+    <!-- ============================================================ -->
+    <!-- BOTTOM SCREEN (4:3) - Online Room Selection                  -->
+    <!-- ============================================================ -->
+    <com.markusmaribu.picochat.ui.ScaleLayout
+        android:id="@+id/bottomScreen"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineHalf"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:id="@+id/roomSelectionContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_gray_stripe"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/roomSelHeader"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="11"
+                android:background="@drawable/bg_room_header"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:text="@string/choose_online_room"
+                android:textColor="@color/ds_black"
+                android:textSize="@dimen/ds_body_text_size" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="76"
+                android:background="@android:color/transparent"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <LinearLayout
+                    android:id="@+id/roomListContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="vertical"
+                    android:paddingVertical="12dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.7">
+
+                    <include
+                        android:id="@+id/roomRowA"
+                        layout="@layout/item_room_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <include
+                        android:id="@+id/roomRowB"
+                        layout="@layout/item_room_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <include
+                        android:id="@+id/roomRowC"
+                        layout="@layout/item_room_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <include
+                        android:id="@+id/roomRowD"
+                        layout="@layout/item_room_row"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/cornerHighlight"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintStart_toStartOf="@id/roomListContainer"
+                    app:layout_constraintEnd_toEndOf="@id/roomListContainer"
+                    app:layout_constraintTop_toTopOf="@id/roomListContainer" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/ds_dark_header" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/roomSelBottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="13"
+                android:background="@color/ds_key_bg">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHeight_percent="0.7"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.7">
+
+                    <TextView
+                        android:id="@+id/btnBack"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_back"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                    <TextView
+                        android:id="@+id/btnJoin"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="24dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_quit_button"
+                        android:fontFamily="@font/cozette_vector"
+                        android:gravity="center"
+                        android:text="@string/btn_join"
+                        android:textColor="@color/ds_black"
+                        android:textSize="@dimen/ds_body_text_size" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+    </com.markusmaribu.picochat.ui.ScaleLayout>
+
+    <!-- Switch Views button (landscape only) -->
+    <TextView
+        android:id="@+id/btnSwitchViews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_quit_button"
+        android:elevation="12dp"
+        android:fontFamily="@font/cozette_vector"
+        android:gravity="center"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        android:text="@string/btn_switch_views"
+        android:textColor="@color/ds_black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ds_black">
+
+    <com.markusmaribu.picochat.ui.ScaleLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/chatHistoryBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_gray_stripe">
+
+            <View
+                android:id="@+id/topSidebar"
+                android:layout_width="@dimen/ds_tool_strip_width"
+                android:layout_height="0dp"
+                android:background="@color/ds_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/chatRecyclerView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@android:color/transparent"
+                android:clipToPadding="false"
+                android:paddingHorizontal="6dp"
+                android:paddingBottom="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/topSidebar"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.markusmaribu.picochat.ui.ScaleLayout>
+
+    <View
+        android:id="@+id/presentationOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:background="@color/ds_gray_stripe"
+        android:visibility="gone" />
+
+</FrameLayout>

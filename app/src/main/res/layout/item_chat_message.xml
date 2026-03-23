@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="2dp">
+
+    <!-- Banner (PictoChat header, always first message) -->
+    <TextView
+        android:id="@+id/msgBanner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_banner_msg"
+        android:clipToOutline="true"
+        android:fontFamily="@font/cozette_vector"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="6dp"
+        android:textColor="@color/ds_white"
+        android:textSize="@dimen/ds_header_text_size"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- System message (full-width black bar with yellow text) -->
+    <TextView
+        android:id="@+id/msgSystem"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_system_msg"
+        android:clipToOutline="true"
+        android:fontFamily="@font/cozette_vector"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="4dp"
+        android:textColor="@color/ds_yellow_enter"
+        android:textSize="@dimen/ds_username_text_size"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Now entering Room A" />
+
+    <!-- Canvas-style message frame (256:88 ratio, matches bottom canvas exactly) -->
+    <FrameLayout
+        android:id="@+id/msgFrame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_canvas_area"
+        android:clipChildren="true"
+        android:clipToPadding="false"
+        android:clipToOutline="true"
+        android:padding="2dp"
+        app:layout_constraintDimensionRatio="256:88"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- Drawing bitmap -->
+        <ImageView
+            android:id="@+id/msgDrawing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
+
+        <!-- Text content (legacy text messages) -->
+        <TextView
+            android:id="@+id/msgText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/cozette_vector"
+            android:gravity="top|start"
+            android:paddingHorizontal="4dp"
+            android:paddingTop="22dp"
+            android:textColor="@color/ds_black"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <!-- Username nametag (identical styling to bottom canvas nametag) -->
+        <TextView
+            android:id="@+id/msgUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:background="@drawable/bg_nametag"
+            android:fontFamily="@font/cozette_vector"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="3dp"
+            android:textColor="@color/ds_white"
+            android:textSize="@dimen/ds_username_text_size"
+            tools:text="Markus" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Central node -->
+    <path
+        android:pathData="M10,10h4v4h-4z"
+        android:fillColor="#FF303030" />
+    <!-- Top branch -->
+    <path
+        android:pathData="M12,4L12,10"
+        android:strokeWidth="2"
+        android:strokeColor="#FF303030" />
+    <!-- Left branch -->
+    <path
+        android:pathData="M4,16L10,12"
+        android:strokeWidth="2"
+        android:strokeColor="#FF303030" />
+    <!-- Right branch -->
+    <path
+        android:pathData="M20,16L14,12"
+        android:strokeWidth="2"
+        android:strokeColor="#FF303030" />
+    <!-- End nodes -->
+    <path
+        android:pathData="M10,2h4v4h-4z"
+        android:fillColor="#FF303030" />
+    <path
+        android:pathData="M2,14h4v4h-4z"
+        android:fillColor="#FF303030" />
+    <path
+        android:pathData="M18,14h4v4h-4z"
+        android:fillColor="#FF303030" />
+</vector>

@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/ds_black"
+    tools:context=".ui.ChatActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineHalf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <!-- ============================================================ -->
+    <!-- TOP SCREEN (4:3) - Chat History                              -->
+    <!-- ============================================================ -->
+    <com.markusmaribu.picochat.ui.ScaleLayout
+        android:id="@+id/topScreen"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/guidelineHalf"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/chatHistoryBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_gray_stripe">
+
+        <!-- Left sidebar (same width as bottom toolbar) -->
+        <LinearLayout
+            android:id="@+id/topSidebar"
+            android:layout_width="@dimen/ds_tool_strip_width"
+            android:layout_height="0dp"
+            android:background="@color/ds_white"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Signal indicator (black square, top) -->
+            <FrameLayout
+                android:id="@+id/signalContainer"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="3dp"
+                android:background="@color/ds_black">
+
+                <View
+                    android:id="@+id/signalLineTop"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_gravity="top"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_marginTop="4dp"
+                    android:background="#FF00C800" />
+
+                <ImageView
+                    android:id="@+id/signalIcon"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_signal" />
+
+                <View
+                    android:id="@+id/signalLineBottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginHorizontal="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="#FF00C800" />
+
+            </FrameLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginHorizontal="3dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/bg_dotted_separator"
+                android:layerType="software" />
+
+            <com.markusmaribu.picochat.ui.ScrollBarVisualizerView
+                android:id="@+id/scrollBarVisualizer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="6dp"
+                android:layout_marginVertical="3dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginHorizontal="3dp"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/bg_dotted_separator"
+                android:layerType="software" />
+
+            <!-- Room letter (grey square, bottom) -->
+            <FrameLayout
+                android:id="@+id/roomLetterContainer"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="3dp"
+                android:background="@color/ds_key_bg">
+
+                <TextView
+                    android:id="@+id/roomLetter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/cozette_vector"
+                    android:textColor="@color/ds_black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:text="A" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <!-- Chat messages (to the right of sidebar) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chatRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@android:color/transparent"
+            android:clipToPadding="false"
+            android:paddingHorizontal="6dp"
+            android:paddingBottom="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/topSidebar"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.markusmaribu.picochat.ui.ScaleLayout>
+
+    <!-- ============================================================ -->
+    <!-- BOTTOM SCREEN (4:3) - Grey container with canvas + keyboard  -->
+    <!-- ============================================================ -->
+    <com.markusmaribu.picochat.ui.ScaleLayout
+        android:id="@+id/bottomScreen"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineHalf"
+        app:layout_constraintVertical_bias="0.0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/ds_white">
+
+        <!-- White top bar behind the close button (starts after tool strip) -->
+        <View
+            android:id="@+id/topBar"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/ds_white"
+            app:layout_constraintBottom_toBottomOf="@id/btnClose"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/toolStrip"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Connected peer names (fills right-to-left, to the left of X) -->
+        <LinearLayout
+            android:id="@+id/peerNamesContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="end|center_vertical"
+            android:orientation="horizontal"
+            android:paddingEnd="2dp"
+            app:layout_constraintBottom_toBottomOf="@id/topBar"
+            app:layout_constraintEnd_toStartOf="@id/btnClose"
+            app:layout_constraintStart_toEndOf="@id/toolStrip"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Close (X) button above the canvas, top-right -->
+        <ImageView
+            android:id="@+id/btnClose"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_margin="2dp"
+            android:background="@drawable/bg_close_button"
+            android:contentDescription="Close"
+            android:padding="3dp"
+            android:src="@drawable/ic_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- ====================================================== -->
+        <!-- Grey outer container (behind canvas + keyboard + actions -->
+        <!-- only; toolstrip and close button sit outside it)         -->
+        <!-- ====================================================== -->
+        <View
+            android:id="@+id/containerBg"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/bg_bottom_container"
+            android:clipToOutline="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/toolStrip"
+            app:layout_constraintTop_toBottomOf="@id/btnClose" />
+
+        <!-- Tool strip (white bg, left side, spans entire height of bottom screen) -->
+        <LinearLayout
+            android:id="@+id/toolStrip"
+            android:layout_width="@dimen/ds_tool_strip_width"
+            android:layout_height="0dp"
+            android:background="@color/ds_white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingVertical="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/btnScrollUp"
+                android:layout_width="23dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tool_button"
+                android:contentDescription="Scroll up"
+                android:padding="4dp"
+                android:src="@drawable/ic_arrow_up" />
+
+            <ImageView
+                android:id="@+id/btnScrollDown"
+                android:layout_width="23dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tool_button"
+                android:contentDescription="Scroll down"
+                android:padding="4dp"
+                android:src="@drawable/ic_arrow_down" />
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="3dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/bg_dotted_separator"
+                android:layerType="software" />
+
+            <ImageView
+                android:id="@+id/btnPencil"
+                android:layout_width="23dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tool_button"
+                android:contentDescription="@string/label_pencil"
+                android:padding="4dp"
+                android:src="@drawable/ic_pencil" />
+
+            <ImageView
+                android:id="@+id/btnEraser"
+                android:layout_width="23dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tool_button"
+                android:contentDescription="@string/label_eraser"
+                android:padding="4dp"
+                android:src="@drawable/ic_eraser" />
+
+            <ImageView
+                android:id="@+id/btnPenThick"
+                android:layout_width="23dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tool_button"
+                android:contentDescription="Thick pen"
+                android:padding="4dp"
+                android:src="@drawable/ic_pen_thick" />
+
+            <ImageView
+                android:id="@+id/btnPenThin"
+                android:layout_width="23dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tool_button"
+                android:contentDescription="Thin pen"
+                android:padding="6dp"
+                android:src="@drawable/ic_pen_thin" />
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="3dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/bg_dotted_separator"
+                android:layerType="software" />
+
+            <TextView
+                android:id="@+id/btnKbLatin"
+                android:layout_width="23dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tool_button"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="A"
+                android:textColor="@color/ds_black"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnKbAccented"
+                android:layout_width="23dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tool_button"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="À"
+                android:textColor="@color/ds_black"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnKbKatakana"
+                android:layout_width="23dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tool_button"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="あ"
+                android:textColor="@color/ds_black"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnKbSymbols"
+                android:layout_width="23dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tool_button"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="\@"
+                android:textColor="@color/ds_black"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btnKbEmoji"
+                android:layout_width="23dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_tool_button"
+                android:fontFamily="@font/cozette_vector"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text="😊"
+                android:textColor="@color/ds_black"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Canvas frame: 256:88 ratio, 6dp inset from outer container edges -->
+        <FrameLayout
+            android:id="@+id/canvasFrame"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_canvas_area"
+            android:clipChildren="true"
+            android:clipToPadding="false"
+            android:clipToOutline="true"
+            android:padding="2dp"
+            app:layout_constraintDimensionRatio="256:88"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/toolStrip"
+            app:layout_constraintTop_toBottomOf="@id/btnClose">
+
+            <com.markusmaribu.picochat.ui.PictoCanvasView
+                android:id="@+id/pictoCanvas"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/canvasUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|start"
+                android:background="@drawable/bg_nametag"
+                android:clickable="false"
+                android:focusable="false"
+                android:fontFamily="@font/cozette_vector"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="3dp"
+                android:textColor="@color/ds_white"
+                android:textSize="@dimen/ds_username_text_size"
+                tools:text="Markus" />
+
+        </FrameLayout>
+
+        <!-- ====================================================== -->
+        <!-- KEYBOARD SECTION (below canvas, with gap)               -->
+        <!-- ====================================================== -->
+
+        <!-- Keyboard container (light grey, rounded corners, thin black outline) -->
+        <FrameLayout
+            android:id="@+id/keyboardContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/bg_inner_container"
+            android:clipChildren="true"
+            android:clipToOutline="true"
+            android:padding="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/rightSidebar"
+            app:layout_constraintStart_toEndOf="@id/toolStrip"
+            app:layout_constraintTop_toBottomOf="@id/canvasFrame">
+
+            <com.markusmaribu.picochat.ui.SoftKeyboardView
+                android:id="@+id/softKeyboard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
+
+        <!-- Action buttons container (rounded left corners only, flush to right edge) -->
+        <LinearLayout
+            android:id="@+id/rightSidebar"
+            android:layout_width="@dimen/ds_right_sidebar_width"
+            android:layout_height="0dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/bg_inner_container"
+            android:clipChildren="true"
+            android:clipToOutline="true"
+            android:orientation="vertical"
+            android:padding="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/canvasFrame">
+
+            <!-- SEND -->
+            <LinearLayout
+                android:id="@+id/btnSend"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginBottom="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_send_button_white"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_arrow_up" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/cozette_vector"
+                    android:text="@string/btn_send"
+                    android:textColor="@color/ds_black"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Retrieve (pull last drawing into canvas) -->
+            <LinearLayout
+                android:id="@+id/btnRetrieve"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginBottom="2dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_right_button"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_retrieve" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/cozette_vector"
+                    android:text="@string/btn_retrieve"
+                    android:textColor="@color/ds_black"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Clear -->
+            <LinearLayout
+                android:id="@+id/btnClear"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_right_button"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_clear" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/cozette_vector"
+                    android:text="@string/btn_clear"
+                    android:textColor="@color/ds_black"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.markusmaribu.picochat.ui.ScaleLayout>
+
+    <!-- Grey overlay for transition animation (covers bottom screen) -->
+    <View
+        android:id="@+id/bottomOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/ds_gray_stripe"
+        android:elevation="10dp"
+        android:outlineProvider="none"
+        app:layout_constraintBottom_toBottomOf="@id/bottomScreen"
+        app:layout_constraintEnd_toEndOf="@id/bottomScreen"
+        app:layout_constraintStart_toStartOf="@id/bottomScreen"
+        app:layout_constraintTop_toTopOf="@id/bottomScreen" />
+
+    <!-- Switch Views button (landscape only) -->
+    <TextView
+        android:id="@+id/btnSwitchViews"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_quit_button"
+        android:elevation="12dp"
+        android:fontFamily="@font/cozette_vector"
+        android:gravity="center"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        android:text="@string/btn_switch_views"
+        android:textColor="@color/ds_black"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

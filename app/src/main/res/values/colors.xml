@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ds_mint_bg">#FFC8E8C0</color>
+    <color name="ds_teal_border">#FF00C8C8</color>
+    <color name="ds_dark_header">#FF303030</color>
+    <color name="ds_green_text">#FF18A818</color>
+    <color name="ds_white">#FFF8F8F8</color>
+    <color name="ds_key_bg">#FFD8D8D8</color>
+    <color name="ds_key_border">#FF989898</color>
+    <color name="ds_black">#FF000000</color>
+    <color name="ds_canvas_white">#FFFFFFFF</color>
+    <color name="ds_gray_stripe">#FFD0D0D0</color>
+    <color name="ds_yellow_enter">#FFFFF040</color>
+    <color name="ds_room_icon_bg">#FFE0E0E0</color>
+</resources>

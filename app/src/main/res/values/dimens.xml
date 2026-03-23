@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="ds_border_width">2dp</dimen>
+    <dimen name="ds_border_width_thick">3dp</dimen>
+    <dimen name="ds_corner_bracket_size">12dp</dimen>
+    <dimen name="ds_padding_small">4dp</dimen>
+    <dimen name="ds_padding_medium">8dp</dimen>
+    <dimen name="ds_padding_large">12dp</dimen>
+    <dimen name="ds_room_row_height">64dp</dimen>
+    <dimen name="ds_room_icon_size">56dp</dimen>
+    <dimen name="ds_header_height">32dp</dimen>
+    <dimen name="ds_username_text_size">14sp</dimen>
+    <dimen name="ds_body_text_size">16sp</dimen>
+    <dimen name="ds_header_text_size">18sp</dimen>
+    <dimen name="ds_title_text_size">22sp</dimen>
+    <dimen name="ds_key_text_size">14sp</dimen>
+    <dimen name="ds_tool_strip_width">36dp</dimen>
+    <dimen name="ds_send_button_width">48dp</dimen>
+    <dimen name="ds_right_sidebar_width">52dp</dimen>
+</resources>
