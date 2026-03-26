@@ -2193,9 +2193,13 @@ class RoomSelectionActivity : AppCompatActivity() {
             val msg = messages.getOrNull(i - 1)
             if (msg is ChatMessage.DrawingMessage) {
                 currentExportDrawing = msg
-                val drawable = android.graphics.drawable.BitmapDrawable(resources, msg.bitmap).apply {
-                    isFilterBitmap = false
-                    setAntiAlias(false)
+                val drawable = if (msg.rainbowBits != null) {
+                    RainbowBitmapDrawable(msg.bitmap, msg.rainbowBits)
+                } else {
+                    android.graphics.drawable.BitmapDrawable(resources, msg.bitmap).apply {
+                        isFilterBitmap = false
+                        setAntiAlias(false)
+                    }
                 }
                 bv.exportPreviewImage.setImageDrawable(drawable)
                 return
@@ -2297,7 +2301,13 @@ class RoomSelectionActivity : AppCompatActivity() {
             withContext(Dispatchers.IO) {
                 val w = Constants.CANVAS_W * 4
                 val h = Constants.CANVAS_H * 4
-                val scaled = Bitmap.createScaledBitmap(drawing.bitmap, w, h, false)
+                val sourceBitmap = if (drawing.rainbowBits != null) {
+                    PictoCanvasView.compositeRainbowBitmap(drawing.bitmap, drawing.rainbowBits)
+                } else {
+                    drawing.bitmap
+                }
+                val scaled = Bitmap.createScaledBitmap(sourceBitmap, w, h, false)
+                if (drawing.rainbowBits != null) sourceBitmap.recycle()
                 val opaque = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
                 val canvas = android.graphics.Canvas(opaque)
                 canvas.drawColor(Color.WHITE)

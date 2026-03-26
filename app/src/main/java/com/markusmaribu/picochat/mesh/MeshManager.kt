@@ -194,7 +194,7 @@ class MeshManager(
                     val fresh = doGattSerialized { gattClient.readPsm(device) }
                     if (fresh != null && fresh > 0) {
                         psmCache[peer.macAddress] = fresh
-                        val sent = l2capManager.sendDrawing(device, fresh, msg.hash, msg.timestamp, msg.username, msg.rawBits, msg.colorIndex)
+                        val sent = l2capManager.sendDrawing(device, fresh, msg.hash, msg.timestamp, msg.username, msg.rawBits, msg.colorIndex, msg.rainbowBits)
                         if (!sent) {
                             psmCache.remove(peer.macAddress)
                             scheduleRetrySend(peer, msg)
@@ -204,7 +204,7 @@ class MeshManager(
                     }
                     return
                 }
-                val sent = l2capManager.sendDrawing(device, psm, msg.hash, msg.timestamp, msg.username, msg.rawBits, msg.colorIndex)
+                val sent = l2capManager.sendDrawing(device, psm, msg.hash, msg.timestamp, msg.username, msg.rawBits, msg.colorIndex, msg.rainbowBits)
                 if (!sent) {
                     psmCache.remove(peer.macAddress)
                     scheduleRetrySend(peer, msg)
@@ -239,7 +239,7 @@ class MeshManager(
                 val psm = doGattSerialized { gattClient.readPsm(device) }
                 if (psm != null && psm > 0) {
                     psmCache[peer.macAddress] = psm
-                    l2capManager.sendDrawing(device, psm, msg.hash, msg.timestamp, msg.username, msg.rawBits, msg.colorIndex)
+                    l2capManager.sendDrawing(device, psm, msg.hash, msg.timestamp, msg.username, msg.rawBits, msg.colorIndex, msg.rainbowBits)
                 } else false
             }
             is ChatMessage.TextMessage -> {
@@ -300,21 +300,20 @@ class MeshManager(
             if (psm == null || psm <= 0) return
 
             val result = l2capManager.pullMessage(device, psm, hash)
-            if (result != null) {
-                val (receivedHash, receivedTimestamp, data) = result
-                if (!messageStore.hasMessage(receivedHash)) {
-                    val bitmap = PictoCanvasView.bitmapFromBits(data)
-                    val msg = ChatMessage.DrawingMessage(
-                        username = peer.username,
-                        bitmap = bitmap,
-                        rawBits = data,
-                        timestamp = receivedTimestamp,
-                        hash = receivedHash
-                    )
-                    messageStore.addMessage(msg)
-                    onMessageReceived(msg)
-                    scheduleHashUpdate()
-                }
+            if (result != null && !messageStore.hasMessage(result.hash)) {
+                val bitmap = PictoCanvasView.bitmapFromBits(result.rawBits)
+                val msg = ChatMessage.DrawingMessage(
+                    username = peer.username,
+                    bitmap = bitmap,
+                    rawBits = result.rawBits,
+                    rainbowBits = result.rainbowBits,
+                    colorIndex = result.colorIndex,
+                    timestamp = result.timestamp,
+                    hash = result.hash
+                )
+                messageStore.addMessage(msg)
+                onMessageReceived(msg)
+                scheduleHashUpdate()
             }
         } catch (e: Exception) {
             Log.w(TAG, "Pull failed from ${peer.macAddress} for hash $hash", e)

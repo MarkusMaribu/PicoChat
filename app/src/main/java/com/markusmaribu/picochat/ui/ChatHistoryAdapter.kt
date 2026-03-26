@@ -127,9 +127,13 @@ class ChatHistoryAdapter : RecyclerView.Adapter<ChatHistoryAdapter.MessageViewHo
                     scaleNametag()
                     textContent.visibility = View.GONE
                     drawingContent.visibility = View.VISIBLE
-                    val drawable = BitmapDrawable(itemView.resources, message.bitmap).apply {
-                        isFilterBitmap = false
-                        setAntiAlias(false)
+                    val drawable = if (message.rainbowBits != null) {
+                        RainbowBitmapDrawable(message.bitmap, message.rainbowBits)
+                    } else {
+                        BitmapDrawable(itemView.resources, message.bitmap).apply {
+                            isFilterBitmap = false
+                            setAntiAlias(false)
+                        }
                     }
                     drawingContent.setImageDrawable(drawable)
                 }

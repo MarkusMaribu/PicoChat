@@ -4,6 +4,8 @@ import android.util.Base64
 import android.util.Log
 import com.markusmaribu.picochat.model.ChatMessage
 import com.markusmaribu.picochat.model.Room
+import com.markusmaribu.picochat.util.CompressionUtil
+import com.markusmaribu.picochat.util.Constants
 import io.github.jan.supabase.realtime.RealtimeChannel
 import io.github.jan.supabase.realtime.broadcast
 import io.github.jan.supabase.realtime.broadcastFlow
@@ -140,6 +142,10 @@ class OnlineChatManager(
             put("colorIndex", msg.colorIndex)
             put("timestamp", msg.timestamp)
             put("hash", msg.hash)
+            if (msg.rainbowBits != null) {
+                val compressed = CompressionUtil.deflate(msg.rainbowBits)
+                put("rainbowBits", Base64.encodeToString(compressed, Base64.NO_WRAP))
+            }
         }
         scope.launch(Dispatchers.IO) {
             try {
@@ -177,11 +183,20 @@ class OnlineChatManager(
             val timestamp = payload["timestamp"]?.jsonPrimitive?.long ?: System.currentTimeMillis()
             val hash = payload["hash"]?.jsonPrimitive?.int ?: 0
 
+            val rainbowBits = try {
+                val rb64 = payload["rainbowBits"]?.jsonPrimitive?.content
+                if (rb64 != null) {
+                    val compressed = Base64.decode(rb64, Base64.NO_WRAP)
+                    CompressionUtil.inflate(compressed, Constants.DRAWING_BYTES)
+                } else null
+            } catch (_: Exception) { null }
+
             val bitmap = com.markusmaribu.picochat.ui.PictoCanvasView.bitmapFromBits(rawBits)
             val msg = ChatMessage.DrawingMessage(
                 username = senderUsername,
                 bitmap = bitmap,
                 rawBits = rawBits,
+                rainbowBits = rainbowBits,
                 colorIndex = colorIndex,
                 timestamp = timestamp,
                 hash = hash

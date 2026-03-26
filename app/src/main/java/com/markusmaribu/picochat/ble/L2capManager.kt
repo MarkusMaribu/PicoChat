@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.util.Log
+import com.markusmaribu.picochat.util.CompressionUtil
 import com.markusmaribu.picochat.util.Constants
 import java.io.IOException
 import java.io.InputStream
@@ -32,7 +33,16 @@ class L2capManager(context: Context) {
         val hash: Int,
         val timestamp: Long,
         val rawBits: ByteArray,
-        val colorIndex: Int = 0
+        val colorIndex: Int = 0,
+        val rainbowBits: ByteArray? = null
+    )
+
+    data class PullResult(
+        val hash: Int,
+        val timestamp: Long,
+        val rawBits: ByteArray,
+        val colorIndex: Int = 0,
+        val rainbowBits: ByteArray? = null
     )
 
     private val bluetoothManager =
@@ -59,7 +69,7 @@ class L2capManager(context: Context) {
         onTextReceivedViaL2cap = callback
     }
 
-    fun startServer(onDrawingReceived: (String, Int, Long, ByteArray, Int) -> Unit) {
+    fun startServer(onDrawingReceived: (String, Int, Long, ByteArray, Int, ByteArray?) -> Unit) {
         if (adapter == null || !adapter.isEnabled) return
 
         try {
@@ -104,7 +114,7 @@ class L2capManager(context: Context) {
 
     private fun handleIncomingConnection(
         socket: BluetoothSocket,
-        onDrawingReceived: (String, Int, Long, ByteArray, Int) -> Unit
+        onDrawingReceived: (String, Int, Long, ByteArray, Int, ByteArray?) -> Unit
     ) {
         try {
             val input = socket.inputStream
@@ -120,15 +130,21 @@ class L2capManager(context: Context) {
                     val nameLen = lenBuf[0].toInt() and 0xFF
                     val nameBytes = readExact(input, nameLen) ?: return
                     val senderName = String(nameBytes, Charsets.UTF_8)
-                    val colorBuf = readExact(input, 1) ?: return
-                    val colorIdx = (colorBuf[0].toInt() and 0xFF).coerceIn(0, 15)
+                    val flagBuf = readExact(input, 1) ?: return
+                    val flagByte = flagBuf[0].toInt() and 0xFF
+                    val colorIdx = flagByte and 0x0F
+                    val hasRainbow = (flagByte and 0x10) != 0
                     val data = readExact(input, Constants.DRAWING_BYTES)
                     if (data != null) {
+                        val rainbowBits = if (hasRainbow) {
+                            val rb = readCompressedRainbow(input)
+                            rb
+                        } else null
                         try {
                             socket.outputStream.write(0x01)
                             socket.outputStream.flush()
                         } catch (_: IOException) {}
-                        onDrawingReceived(senderName, hashOrLength, timestamp, data, colorIdx)
+                        onDrawingReceived(senderName, hashOrLength, timestamp, data, colorIdx, rainbowBits)
                     }
                 }
                 TYPE_TEXT -> {
@@ -170,8 +186,10 @@ class L2capManager(context: Context) {
             output.write(header)
             output.write(byteArrayOf(usernameBytes.size.toByte()))
             output.write(usernameBytes)
-            output.write(byteArrayOf(msg.colorIndex.coerceIn(0, 15).toByte()))
+            val flags = msg.colorIndex.coerceIn(0, 15) or (if (msg.rainbowBits != null) 0x10 else 0x00)
+            output.write(byteArrayOf(flags.toByte()))
             output.write(msg.rawBits)
+            writeCompressedRainbow(output, msg.rainbowBits)
             output.flush()
         } catch (e: Exception) {
             Log.w(TAG, "Error responding to pull request", e)
@@ -199,7 +217,8 @@ class L2capManager(context: Context) {
         timestamp: Long,
         username: String,
         data: ByteArray,
-        colorIndex: Int = 0
+        colorIndex: Int = 0,
+        rainbowBits: ByteArray? = null
     ): Boolean {
         if (data.size != Constants.DRAWING_BYTES) {
             Log.w(TAG, "Invalid drawing data size: ${data.size}")
@@ -221,8 +240,10 @@ class L2capManager(context: Context) {
             output.write(header)
             output.write(byteArrayOf(usernameBytes.size.toByte()))
             output.write(usernameBytes)
-            output.write(byteArrayOf(colorIndex.coerceIn(0, 15).toByte()))
+            val flags = colorIndex.coerceIn(0, 15) or (if (rainbowBits != null) 0x10 else 0x00)
+            output.write(byteArrayOf(flags.toByte()))
             output.write(data)
+            writeCompressedRainbow(output, rainbowBits)
             output.flush()
             waitForAck(socket)
             true
@@ -267,7 +288,7 @@ class L2capManager(context: Context) {
         }
     }
 
-    fun pullMessage(device: BluetoothDevice, psm: Int, requestedHash: Int): Triple<Int, Long, ByteArray>? {
+    fun pullMessage(device: BluetoothDevice, psm: Int, requestedHash: Int): PullResult? {
         var socket: BluetoothSocket? = null
         return try {
             socket = device.createInsecureL2capChannel(psm)
@@ -303,15 +324,15 @@ class L2capManager(context: Context) {
                     val lenBuf = readExact(input, 1) ?: return null
                     val nameLen = lenBuf[0].toInt() and 0xFF
                     readExact(input, nameLen) ?: return null
-                    val colorBuf = readExact(input, 1) ?: return null
-                    val colorIdx = (colorBuf[0].toInt() and 0xFF).coerceIn(0, 15)
-                    val data = readExact(input, Constants.DRAWING_BYTES)
-                    if (data != null) Triple(hashOrLength, timestamp, data) else null
+                    val flagBuf = readExact(input, 1) ?: return null
+                    val flagByte = flagBuf[0].toInt() and 0xFF
+                    val colorIdx = flagByte and 0x0F
+                    val hasRainbow = (flagByte and 0x10) != 0
+                    val data = readExact(input, Constants.DRAWING_BYTES) ?: return null
+                    val rainbowBits = if (hasRainbow) readCompressedRainbow(input) else null
+                    PullResult(hashOrLength, timestamp, data, colorIdx, rainbowBits)
                 }
-                TYPE_TEXT -> {
-                    val data = readExact(input, hashOrLength)
-                    if (data != null) Triple(hashOrLength, timestamp, data) else null
-                }
+                TYPE_TEXT -> null
                 else -> null
             }
         } catch (e: Exception) {
@@ -320,6 +341,26 @@ class L2capManager(context: Context) {
         } finally {
             try { socket?.close() } catch (_: IOException) {}
         }
+    }
+
+    private fun writeCompressedRainbow(output: java.io.OutputStream, rainbowBits: ByteArray?) {
+        if (rainbowBits == null) return
+        val compressed = CompressionUtil.deflate(rainbowBits)
+        output.write(byteArrayOf(
+            (compressed.size and 0xFF).toByte(),
+            ((compressed.size shr 8) and 0xFF).toByte()
+        ))
+        output.write(compressed)
+    }
+
+    private fun readCompressedRainbow(input: InputStream): ByteArray? {
+        val lenBytes = readExact(input, 2) ?: return null
+        val len = (lenBytes[0].toInt() and 0xFF) or ((lenBytes[1].toInt() and 0xFF) shl 8)
+        if (len <= 0 || len > 8192) return null
+        val compressed = readExact(input, len) ?: return null
+        return try {
+            CompressionUtil.inflate(compressed, Constants.DRAWING_BYTES)
+        } catch (_: Exception) { null }
     }
 
     private fun readExact(input: InputStream, length: Int): ByteArray? {

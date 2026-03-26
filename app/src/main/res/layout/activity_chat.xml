@@ -308,7 +308,7 @@
                 android:background="@drawable/bg_dotted_separator"
                 android:layerType="software" />
 
-            <TextView
+            <com.markusmaribu.picochat.ui.OutlinedTextView
                 android:id="@+id/btnKbLatin"
                 android:layout_width="23dp"
                 android:layout_height="0dp"
@@ -320,9 +320,11 @@
                 android:text="A"
                 android:textColor="@color/ds_black"
                 android:textSize="11sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:outlineColor="@android:color/white"
+                app:outlineWidth="1.5dp" />
 
-            <TextView
+            <com.markusmaribu.picochat.ui.OutlinedTextView
                 android:id="@+id/btnKbAccented"
                 android:layout_width="23dp"
                 android:layout_height="0dp"
@@ -335,9 +337,11 @@
                 android:text="À"
                 android:textColor="@color/ds_black"
                 android:textSize="11sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:outlineColor="@android:color/white"
+                app:outlineWidth="1.5dp" />
 
-            <TextView
+            <com.markusmaribu.picochat.ui.OutlinedTextView
                 android:id="@+id/btnKbKatakana"
                 android:layout_width="23dp"
                 android:layout_height="0dp"
@@ -350,9 +354,11 @@
                 android:text="あ"
                 android:textColor="@color/ds_black"
                 android:textSize="11sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:outlineColor="@android:color/white"
+                app:outlineWidth="1.5dp" />
 
-            <TextView
+            <com.markusmaribu.picochat.ui.OutlinedTextView
                 android:id="@+id/btnKbSymbols"
                 android:layout_width="23dp"
                 android:layout_height="0dp"
@@ -365,9 +371,11 @@
                 android:text="\@"
                 android:textColor="@color/ds_black"
                 android:textSize="11sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:outlineColor="@android:color/white"
+                app:outlineWidth="1.5dp" />
 
-            <TextView
+            <com.markusmaribu.picochat.ui.OutlinedTextView
                 android:id="@+id/btnKbEmoji"
                 android:layout_width="23dp"
                 android:layout_height="0dp"
@@ -380,7 +388,9 @@
                 android:text="😊"
                 android:textColor="@color/ds_black"
                 android:textSize="11sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:outlineColor="@android:color/white"
+                app:outlineWidth="1.5dp" />
 
         </LinearLayout>
 

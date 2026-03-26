@@ -1,5 +1,6 @@
 package com.markusmaribu.picochat.ui
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -10,12 +11,13 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.LinearInterpolator
 import androidx.core.content.res.ResourcesCompat
 import com.markusmaribu.picochat.R
 import com.markusmaribu.picochat.util.Constants
 import kotlin.math.abs
 
-enum class Tool { PENCIL, ERASER }
+enum class Tool { PENCIL, ERASER, RAINBOW }
 
 class PictoCanvasView @JvmOverloads constructor(
     context: Context,
@@ -28,6 +30,24 @@ class PictoCanvasView @JvmOverloads constructor(
     ).apply { eraseColor(Color.TRANSPARENT) }
 
     private val bitmapCanvas = Canvas(canvasBitmap)
+
+    private val rainbowBitmap = Bitmap.createBitmap(
+        Constants.CANVAS_W, Constants.CANVAS_H, Bitmap.Config.ARGB_8888
+    ).apply { eraseColor(Color.TRANSPARENT) }
+
+    private val rainbowRenderBitmap = Bitmap.createBitmap(
+        Constants.CANVAS_W, Constants.CANVAS_H, Bitmap.Config.ARGB_8888
+    )
+
+    private val rainbowColors = IntArray(Constants.CANVAS_W)
+    private val rainbowMaskPixels = IntArray(Constants.CANVAS_W * Constants.CANVAS_H)
+    private val rainbowPixels = IntArray(Constants.CANVAS_W * Constants.CANVAS_H)
+    private val hsvTemp = floatArrayOf(0f, 1f, 0.85f)
+
+    private var rainbowPhase = 0f
+    private var rainbowAnimator: ValueAnimator? = null
+    var hasRainbowContent = false
+        private set
 
     private val renderPaint = Paint().apply {
         isFilterBitmap = false
@@ -187,6 +207,54 @@ class PictoCanvasView @JvmOverloads constructor(
         )
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        startRainbowAnimation()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        stopRainbowAnimation()
+    }
+
+    private fun startRainbowAnimation() {
+        if (rainbowAnimator != null) return
+        rainbowAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
+            duration = 3000
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.RESTART
+            interpolator = LinearInterpolator()
+            addUpdateListener {
+                rainbowPhase = it.animatedValue as Float
+                if (hasRainbowContent) invalidate()
+            }
+            start()
+        }
+    }
+
+    private fun stopRainbowAnimation() {
+        rainbowAnimator?.cancel()
+        rainbowAnimator = null
+    }
+
+    private fun updateRainbowRenderBitmap() {
+        for (x in 0 until Constants.CANVAS_W) {
+            hsvTemp[0] = ((x.toFloat() / Constants.CANVAS_W * 360f) + rainbowPhase) % 360f
+            rainbowColors[x] = Color.HSVToColor(hsvTemp)
+        }
+        rainbowBitmap.getPixels(
+            rainbowMaskPixels, 0, Constants.CANVAS_W,
+            0, 0, Constants.CANVAS_W, Constants.CANVAS_H
+        )
+        for (i in rainbowMaskPixels.indices) {
+            rainbowPixels[i] = if (rainbowMaskPixels[i] != 0) rainbowColors[i % Constants.CANVAS_W] else 0
+        }
+        rainbowRenderBitmap.setPixels(
+            rainbowPixels, 0, Constants.CANVAS_W,
+            0, 0, Constants.CANVAS_W, Constants.CANVAS_H
+        )
+    }
+
     private fun renderTextBitmap() {
         textBitmap.eraseColor(Color.TRANSPARENT)
         for (cp in layoutText()) {
@@ -217,6 +285,11 @@ class PictoCanvasView @JvmOverloads constructor(
         }
 
         canvas.drawBitmap(canvasBitmap, null, dstRect, renderPaint)
+
+        if (hasRainbowContent) {
+            updateRainbowRenderBitmap()
+            canvas.drawBitmap(rainbowRenderBitmap, null, dstRect, renderPaint)
+        }
 
         renderTextBitmap()
         canvas.drawBitmap(textBitmap, null, dstRect, renderPaint)
@@ -336,10 +409,24 @@ class PictoCanvasView @JvmOverloads constructor(
                     for (px in (x - half)..(x + half)) {
                         if (px in 0 until Constants.CANVAS_W && py in 0 until Constants.CANVAS_H) {
                             canvasBitmap.setPixel(px, py, Color.BLACK)
+                            rainbowBitmap.setPixel(px, py, Color.TRANSPARENT)
                         }
                     }
                 }
                 hasDrawContent = true
+            }
+            Tool.RAINBOW -> {
+                val half = penSize / 2
+                for (py in (y - half)..(y + half)) {
+                    for (px in (x - half)..(x + half)) {
+                        if (px in 0 until Constants.CANVAS_W && py in 0 until Constants.CANVAS_H) {
+                            canvasBitmap.setPixel(px, py, Color.BLACK)
+                            rainbowBitmap.setPixel(px, py, Color.BLACK)
+                        }
+                    }
+                }
+                hasDrawContent = true
+                hasRainbowContent = true
             }
             Tool.ERASER -> {
                 val half = if (penSize == 3) 4 else 1
@@ -347,6 +434,7 @@ class PictoCanvasView @JvmOverloads constructor(
                     for (ex in (x - half)..(x + half - 1)) {
                         if (ex in 0 until Constants.CANVAS_W && ey in 0 until Constants.CANVAS_H) {
                             canvasBitmap.setPixel(ex, ey, Color.TRANSPARENT)
+                            rainbowBitmap.setPixel(ex, ey, Color.TRANSPARENT)
                         }
                     }
                 }
@@ -380,6 +468,8 @@ class PictoCanvasView @JvmOverloads constructor(
 
     fun clear() {
         canvasBitmap.eraseColor(Color.TRANSPARENT)
+        rainbowBitmap.eraseColor(Color.TRANSPARENT)
+        hasRainbowContent = false
         textBuffer.clear()
         customTextStartX = Float.NaN
         customTextStartY = Float.NaN
@@ -432,6 +522,8 @@ class PictoCanvasView @JvmOverloads constructor(
     fun importBits(data: ByteArray) {
         if (data.size < Constants.DRAWING_BYTES) return
         canvasBitmap.eraseColor(Color.TRANSPARENT)
+        rainbowBitmap.eraseColor(Color.TRANSPARENT)
+        hasRainbowContent = false
         textBuffer.clear()
         customTextStartX = Float.NaN
         customTextStartY = Float.NaN
@@ -452,6 +544,57 @@ class PictoCanvasView @JvmOverloads constructor(
             }
         }
         hasDrawContent = true
+        invalidate()
+    }
+
+    fun exportRainbowBits(): ByteArray? {
+        if (!hasRainbowContent) return null
+        val bytes = ByteArray(Constants.DRAWING_BYTES)
+        var byteIndex = 0
+        var bitIndex = 0
+        var current = 0
+        var anySet = false
+
+        for (y in 0 until Constants.CANVAS_H) {
+            for (x in 0 until Constants.CANVAS_W) {
+                val pixel = rainbowBitmap.getPixel(x, y)
+                if (pixel != Color.TRANSPARENT && Color.alpha(pixel) > 128) {
+                    current = current or (1 shl (7 - bitIndex))
+                    anySet = true
+                }
+                bitIndex++
+                if (bitIndex == 8) {
+                    bytes[byteIndex] = current.toByte()
+                    byteIndex++
+                    bitIndex = 0
+                    current = 0
+                }
+            }
+        }
+        return if (anySet) bytes else null
+    }
+
+    fun importRainbowBits(data: ByteArray?) {
+        rainbowBitmap.eraseColor(Color.TRANSPARENT)
+        hasRainbowContent = false
+        if (data == null || data.size < Constants.DRAWING_BYTES) return
+        var byteIndex = 0
+        var bitIndex = 0
+
+        for (y in 0 until Constants.CANVAS_H) {
+            for (x in 0 until Constants.CANVAS_W) {
+                val bit = (data[byteIndex].toInt() shr (7 - bitIndex)) and 1
+                if (bit == 1) {
+                    rainbowBitmap.setPixel(x, y, Color.BLACK)
+                    hasRainbowContent = true
+                }
+                bitIndex++
+                if (bitIndex == 8) {
+                    byteIndex++
+                    bitIndex = 0
+                }
+            }
+        }
         invalidate()
     }
 
@@ -483,6 +626,38 @@ class PictoCanvasView @JvmOverloads constructor(
                 }
             }
             return bmp
+        }
+
+        fun compositeRainbowBitmap(baseBitmap: Bitmap, rainbowBits: ByteArray, phase: Float = 0f): Bitmap {
+            val w = Constants.CANVAS_W
+            val h = Constants.CANVAS_H
+            val result = baseBitmap.copy(Bitmap.Config.ARGB_8888, true) ?: return baseBitmap
+            if (rainbowBits.size < Constants.DRAWING_BYTES) return result
+
+            val pixels = IntArray(w * h)
+            result.getPixels(pixels, 0, w, 0, 0, w, h)
+
+            val hsv = floatArrayOf(0f, 1f, 0.85f)
+            var byteIndex = 0
+            var bitIndex = 0
+
+            for (y in 0 until h) {
+                for (x in 0 until w) {
+                    val bit = (rainbowBits[byteIndex].toInt() shr (7 - bitIndex)) and 1
+                    if (bit == 1) {
+                        hsv[0] = ((x.toFloat() / w * 360f) + phase) % 360f
+                        pixels[y * w + x] = Color.HSVToColor(hsv)
+                    }
+                    bitIndex++
+                    if (bitIndex == 8) {
+                        byteIndex++
+                        bitIndex = 0
+                    }
+                }
+            }
+
+            result.setPixels(pixels, 0, w, 0, 0, w, h)
+            return result
         }
     }
 }

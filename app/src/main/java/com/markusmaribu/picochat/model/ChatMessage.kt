@@ -20,6 +20,7 @@ sealed class ChatMessage {
         override val username: String,
         val bitmap: Bitmap,
         val rawBits: ByteArray,
+        val rainbowBits: ByteArray? = null,
         override val colorIndex: Int = 0,
         override val timestamp: Long = System.currentTimeMillis(),
         override val hash: Int = computeHash(username, rawBits, timestamp)

@@ -8,6 +8,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.Bundle
@@ -25,7 +26,9 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.graphics.Color
 import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
@@ -362,6 +365,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        stopPenRainbowAnimation()
         handler.removeCallbacksAndMessages(null)
         displayManager?.unregisterDisplayListener(displayListener)
         dismissAllPresentations()
@@ -403,15 +407,16 @@ class ChatActivity : AppCompatActivity() {
         }
 
         v.canvas.onToolChanged = { tool ->
-            v.btnPencil.isSelected = (tool == Tool.PENCIL)
+            v.btnPencil.isSelected = (tool == Tool.PENCIL || tool == Tool.RAINBOW)
             v.btnEraser.isSelected = (tool == Tool.ERASER)
+            updatePencilButtonAppearance(v, tool)
         }
         v.canvas.onPenSizeChanged = { size ->
             v.btnPenThick.isSelected = (size == 3)
             v.btnPenThin.isSelected = (size == 1)
         }
         v.canvas.onDrawStart = { tool ->
-            val sound = if (tool == Tool.PENCIL) SoundManager.Sound.PEN else SoundManager.Sound.ERASER
+            val sound = if (tool == Tool.ERASER) SoundManager.Sound.ERASER else SoundManager.Sound.PEN
             soundManager.playDrawing(sound)
         }
         v.canvas.onDrawEnd = { soundManager.stopDrawing() }
@@ -428,7 +433,11 @@ class ChatActivity : AppCompatActivity() {
         v.keyboard.onTouchUp = { soundManager.play(SoundManager.Sound.KEY_UP) }
 
         v.btnPencil.setOnClickListener {
-            v.canvas.tool = Tool.PENCIL
+            v.canvas.tool = when (v.canvas.tool) {
+                Tool.PENCIL -> Tool.RAINBOW
+                Tool.RAINBOW -> Tool.PENCIL
+                Tool.ERASER -> Tool.PENCIL
+            }
             soundManager.play(SoundManager.Sound.SELECT_PEN)
         }
         v.btnEraser.setOnClickListener {
@@ -486,6 +495,7 @@ class ChatActivity : AppCompatActivity() {
             }
             if (drawing != null) {
                 v.canvas.importBits(drawing.rawBits)
+                v.canvas.importRainbowBits(drawing.rainbowBits)
             }
         }
         v.btnClear.setOnClickListener {
@@ -944,6 +954,46 @@ class ChatActivity : AppCompatActivity() {
         bv.canvas.ruledLineColor = ThemeColors.brighten(color, 0.85f)
     }
 
+    private var penRainbowAnimator: ValueAnimator? = null
+
+    private fun updatePencilButtonAppearance(v: BottomViews, tool: Tool) {
+        val color = ThemeColors.PALETTE[colorIndex]
+        val dark = ThemeColors.darken(color)
+        if (tool == Tool.RAINBOW) {
+            startPenRainbowAnimation(v.btnPencil)
+        } else {
+            stopPenRainbowAnimation()
+            v.btnPencil.background = makeThemedToolButtonDrawable(color, dark)
+        }
+    }
+
+    private fun startPenRainbowAnimation(btn: View) {
+        stopPenRainbowAnimation()
+        val density = resources.displayMetrics.density
+        val strokeWidth = (1 * density).toInt()
+        val bgDrawable = GradientDrawable()
+        btn.background = bgDrawable
+        penRainbowAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
+            duration = 3000
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.RESTART
+            interpolator = LinearInterpolator()
+            val hsv = floatArrayOf(0f, 1f, 0.85f)
+            addUpdateListener {
+                hsv[0] = it.animatedValue as Float
+                val c = Color.HSVToColor(hsv)
+                bgDrawable.setColor(c)
+                bgDrawable.setStroke(strokeWidth, ThemeColors.darken(c))
+            }
+            start()
+        }
+    }
+
+    private fun stopPenRainbowAnimation() {
+        penRainbowAnimator?.cancel()
+        penRainbowAnimator = null
+    }
+
     private fun makeThemedToolButtonDrawable(color: Int, dark: Int): StateListDrawable {
         val selected = GradientDrawable().apply {
             setColor(color)
@@ -1013,11 +1063,13 @@ class ChatActivity : AppCompatActivity() {
     private fun sendMessage() {
         if (bv.canvas.hasDrawing()) {
             val bits = bv.canvas.exportBits()
+            val rainbowBits = bv.canvas.exportRainbowBits()
             val bitmap = bv.canvas.getBitmap()
             val msg = ChatMessage.DrawingMessage(
                 username = username,
                 bitmap = bitmap,
                 rawBits = bits,
+                rainbowBits = rainbowBits,
                 colorIndex = colorIndex,
                 timestamp = ChatRepository.nextTimestamp()
             )
@@ -1105,8 +1157,9 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun onSecondaryDisplayConnected(display: Display, existingCanvasBits: ByteArray? = null) {
+    private fun onSecondaryDisplayConnected(display: Display, existingCanvasBits: ByteArray? = null, existingRainbowBits: ByteArray? = null) {
         val canvasBits = existingCanvasBits ?: bv.canvas.exportBits()
+        val rainbowBits = existingRainbowBits ?: bv.canvas.exportRainbowBits()
         val hasContent = existingCanvasBits != null || bv.canvas.hasDrawing()
 
         if (viewsSwapped) {
@@ -1155,7 +1208,10 @@ class ChatActivity : AppCompatActivity() {
             wireBottomScreen()
             applyChatThemeColor()
 
-            if (hasContent) bv.canvas.importBits(canvasBits)
+            if (hasContent) {
+                bv.canvas.importBits(canvasBits)
+                bv.canvas.importRainbowBits(rainbowBits)
+            }
         }
 
         isSecondaryDisplayActive = true
@@ -1166,6 +1222,7 @@ class ChatActivity : AppCompatActivity() {
         val dm = displayManager ?: return
         val secondary = dm.displays.firstOrNull { it.displayId != Display.DEFAULT_DISPLAY }
         val canvasBits = if (bv.canvas.hasDrawing()) bv.canvas.exportBits() else null
+        val rainbowBits = if (canvasBits != null) bv.canvas.exportRainbowBits() else null
 
         val oldCanvasPres = canvasPresentation
         val oldChatPres = chatHistoryPresentation
@@ -1180,9 +1237,12 @@ class ChatActivity : AppCompatActivity() {
         isSecondaryDisplayActive = false
 
         if (secondary != null) {
-            onSecondaryDisplayConnected(secondary, canvasBits)
+            onSecondaryDisplayConnected(secondary, canvasBits, rainbowBits)
         } else {
-            if (canvasBits != null) bv.canvas.importBits(canvasBits)
+            if (canvasBits != null) {
+                bv.canvas.importBits(canvasBits)
+                bv.canvas.importRainbowBits(rainbowBits)
+            }
             fitScreensToParent()
         }
 
@@ -1235,9 +1295,9 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun onSecondaryDisplayDisconnected() {
-        val canvasBits = if ((canvasPresentation != null || chatHistoryPresentation != null) && bv.canvas.hasDrawing()) {
-            bv.canvas.exportBits()
-        } else null
+        val hasCanvas = (canvasPresentation != null || chatHistoryPresentation != null) && bv.canvas.hasDrawing()
+        val canvasBits = if (hasCanvas) bv.canvas.exportBits() else null
+        val rainbowBits = if (hasCanvas) bv.canvas.exportRainbowBits() else null
 
         dismissAllPresentations()
 
@@ -1245,7 +1305,10 @@ class ChatActivity : AppCompatActivity() {
         wireBottomScreen()
         applyChatThemeColor()
 
-        if (canvasBits != null) bv.canvas.importBits(canvasBits)
+        if (canvasBits != null) {
+            bv.canvas.importBits(canvasBits)
+            bv.canvas.importRainbowBits(rainbowBits)
+        }
 
         isSecondaryDisplayActive = false
         fitScreensToParent()
@@ -1273,12 +1336,12 @@ class ChatActivity : AppCompatActivity() {
                 l2.setMessageProvider { requestedHash ->
                     val msg = ChatRepository.messageStore.getMessage(requestedHash)
                     if (msg is ChatMessage.DrawingMessage) {
-                        L2capManager.DrawingPayload(msg.username, msg.hash, msg.timestamp, msg.rawBits, msg.colorIndex)
+                        L2capManager.DrawingPayload(msg.username, msg.hash, msg.timestamp, msg.rawBits, msg.colorIndex, msg.rainbowBits)
                     } else null
                 }
                 l2.setOnTextReceived { data -> onTextReceivedViaL2cap(data) }
-                l2.startServer { senderName, hash, timestamp, data, colorIdx ->
-                    onDrawingReceived(senderName, hash, timestamp, data, colorIdx)
+                l2.startServer { senderName, hash, timestamp, data, colorIdx, rainbowBits ->
+                    onDrawingReceived(senderName, hash, timestamp, data, colorIdx, rainbowBits)
                 }
                 gattServer?.setL2capPsm(l2.getServerPsm())
             }
@@ -1387,7 +1450,7 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun onDrawingReceived(senderName: String, hash: Int, timestamp: Long, data: ByteArray, colorIdx: Int = 0) {
+    private fun onDrawingReceived(senderName: String, hash: Int, timestamp: Long, data: ByteArray, colorIdx: Int = 0, rainbowBits: ByteArray? = null) {
         if (ChatRepository.messageStore.hasMessage(hash)) return
 
         val bitmap = PictoCanvasView.bitmapFromBits(data)
@@ -1395,6 +1458,7 @@ class ChatActivity : AppCompatActivity() {
             username = senderName,
             bitmap = bitmap,
             rawBits = data,
+            rainbowBits = rainbowBits,
             colorIndex = colorIdx,
             timestamp = timestamp,
             hash = hash
