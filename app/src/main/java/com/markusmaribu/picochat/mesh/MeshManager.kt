@@ -14,7 +14,7 @@ import com.markusmaribu.picochat.ble.L2capManager
 import com.markusmaribu.picochat.model.ChatMessage
 import com.markusmaribu.picochat.model.PeerUser
 import com.markusmaribu.picochat.model.Room
-import com.markusmaribu.picochat.ui.PictoCanvasView
+import com.markusmaribu.picochat.ui.compose.canvas.CanvasEngine
 import com.markusmaribu.picochat.util.Constants
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
@@ -301,7 +301,7 @@ class MeshManager(
 
             val result = l2capManager.pullMessage(device, psm, hash)
             if (result != null && !messageStore.hasMessage(result.hash)) {
-                val bitmap = PictoCanvasView.bitmapFromBits(result.rawBits)
+                val bitmap = CanvasEngine.bitmapFromBits(result.rawBits)
                 val msg = ChatMessage.DrawingMessage(
                     username = peer.username,
                     bitmap = bitmap,

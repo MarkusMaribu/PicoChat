@@ -38,6 +38,8 @@
     <string name="btn_swap_views">Swap Views</string>
     <string name="btn_lock_rotation">Lock Rotation</string>
     <string name="btn_unlock_rotation">Unlock Rotation</string>
+    <string name="btn_top_size_format">Top Size: %1$s</string>
+    <string name="btn_top_alignment_format">Top Alignment: %1$s</string>
     <string name="btn_export_chat">Export Chat</string>
     <string name="export_chat_title">Export Chat</string>
     <string name="export_chat_confirm">Are you sure you want to export this image?</string>

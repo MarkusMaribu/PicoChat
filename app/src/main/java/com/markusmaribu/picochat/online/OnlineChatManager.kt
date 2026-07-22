@@ -191,7 +191,7 @@ class OnlineChatManager(
                 } else null
             } catch (_: Exception) { null }
 
-            val bitmap = com.markusmaribu.picochat.ui.PictoCanvasView.bitmapFromBits(rawBits)
+            val bitmap = com.markusmaribu.picochat.ui.compose.canvas.CanvasEngine.bitmapFromBits(rawBits)
             val msg = ChatMessage.DrawingMessage(
                 username = senderUsername,
                 bitmap = bitmap,
