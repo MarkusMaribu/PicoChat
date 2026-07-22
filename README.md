@@ -9,5 +9,7 @@ https://discord.gg/2GBTwZxCaS
 
 ![Landscape screenshot](https://github.com/user-attachments/assets/1e6e1d28-1b2d-4fa7-8e4f-b281f02284f3)
 
+
+AI Disclaimer:
+This app is coded using AI, however no AI generated visuals or audio has been used.
 (This app does not have any affiliation with Nintendo)
-This app is coded using Claude Opus 4.6. No AI generated assets have been used.
