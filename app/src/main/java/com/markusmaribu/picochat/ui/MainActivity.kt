@@ -1,9 +1,13 @@
 package com.markusmaribu.picochat.ui
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.SystemClock
 import android.view.Display
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -112,6 +116,8 @@ class MainActivity : ComponentActivity() {
 
         requestBlePermissions()
 
+        ensureInputFocusTarget()
+
         setContent {
             val secondaryDisplay by displayCoordinator.secondaryDisplay.collectAsState()
             AppRoot(
@@ -123,7 +129,93 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        reclaimInputFocus()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            focusWatchdog.removeCallbacksAndMessages(null)
+            reclaimInputFocus()
+        } else {
+            scheduleFocusRecovery()
+        }
+    }
+
+    override fun onTopResumedActivityChanged(isTopResumedActivity: Boolean) {
+        super.onTopResumedActivityChanged(isTopResumedActivity)
+        if (isTopResumedActivity) reclaimInputFocus()
+    }
+
+    override fun onStop() {
+        focusWatchdog.removeCallbacksAndMessages(null)
+        super.onStop()
+    }
+
+    /**
+     * Handheld system menus (e.g. AYN overlay) can dismiss without giving this
+     * window input focus again, so gamepad events reach the launcher instead.
+     */
+    private fun ensureInputFocusTarget() {
+        window.decorView.apply {
+            isFocusable = true
+            isFocusableInTouchMode = true
+        }
+    }
+
+    private fun reclaimInputFocus() {
+        ensureInputFocusTarget()
+        val decor = window.decorView
+        decor.post {
+            if (!decor.hasFocus()) decor.requestFocus()
+            // Some OEM overlays need a second pass after the window manager settles.
+            if (!hasWindowFocus()) {
+                decor.postDelayed({
+                    if (!decor.hasFocus()) decor.requestFocus()
+                }, 100L)
+            }
+        }
+    }
+
+    // ---- Window-focus watchdog ----
+    //
+    // On the AYN Thor, closing the system overlay can leave input focus on the
+    // launcher while PicoChat is still the visible app. A view-level
+    // requestFocus() can't cross windows, so if we stay unfocused while
+    // visible, re-launch our own activity with REORDER_TO_FRONT to make the
+    // window manager hand focus back.
+
+    private val focusWatchdog = Handler(Looper.getMainLooper())
+    private var lastFrontNudge = 0L
+
+    private fun scheduleFocusRecovery() {
+        focusWatchdog.removeCallbacksAndMessages(null)
+        focusWatchdog.postDelayed({ recoverWindowFocusIfNeeded() }, FOCUS_RECOVERY_DELAY_MS)
+    }
+
+    private fun recoverWindowFocusIfNeeded() {
+        if (hasWindowFocus() || isFinishing) return
+        if (!lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) return
+
+        val now = SystemClock.uptimeMillis()
+        if (now - lastFrontNudge >= FRONT_NUDGE_COOLDOWN_MS) {
+            lastFrontNudge = now
+            startActivity(
+                Intent(this, MainActivity::class.java)
+                    .addFlags(
+                        Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    )
+            )
+        }
+        // Keep checking while we remain visible without focus.
+        scheduleFocusRecovery()
+    }
+
     override fun onDestroy() {
+        focusWatchdog.removeCallbacksAndMessages(null)
         dismissSecondaryPresentation()
         displayCoordinator.stop()
         if (vm.onSwapViewsRequested != null) vm.onSwapViewsRequested = null
@@ -141,7 +233,11 @@ class MainActivity : ComponentActivity() {
         if (current != null && current.display.displayId == display.displayId) return
 
         dismissSecondaryPresentation()
-        presentation = ComposePresentation(this, display) {
+        presentation = ComposePresentation(
+            this, display,
+            onKeyEvent = { vm.dispatchKeyEvent(it) },
+            onMotionEvent = { vm.dispatchGenericMotionEvent(it) }
+        ) {
             PresentationRoot()
         }.also { pres ->
             pres.setOnDismissListener {
@@ -293,5 +389,7 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private const val BLE_PERMISSION_REQUEST = 1001
+        private const val FOCUS_RECOVERY_DELAY_MS = 1500L
+        private const val FRONT_NUDGE_COOLDOWN_MS = 5000L
     }
 }
