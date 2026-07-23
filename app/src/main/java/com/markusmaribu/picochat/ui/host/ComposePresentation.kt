@@ -3,8 +3,7 @@ package com.markusmaribu.picochat.ui.host
 import android.app.Presentation
 import android.os.Bundle
 import android.view.Display
-import android.view.KeyEvent
-import android.view.MotionEvent
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
@@ -22,19 +21,13 @@ import androidx.savedstate.setViewTreeSavedStateRegistryOwner
  * Generic secondary-display window hosting a [ComposeView] (replaces the four
  * layout-specific Presentation subclasses). Presentation windows don't get
  * view-tree owners automatically, so this class provides its own lifecycle
- * and saved-state registry and borrows the activity's ViewModel store.
- *
- * The window stays focusable on purpose: on dual-screen handhelds (AYN Thor)
- * the system can move key routing to the secondary display, and if this
- * window refused focus the shell running behind it would receive all gamepad
- * input. Events that land here are forwarded to the shared input pipeline
- * via [onKeyEvent] / [onMotionEvent].
+ * and saved-state registry and borrows the activity's ViewModel store; it
+ * also keeps FLAG_NOT_FOCUSABLE so key/controller input stays routed to the
+ * activity.
  */
 class ComposePresentation(
     private val activity: ComponentActivity,
     display: Display,
-    private val onKeyEvent: (KeyEvent) -> Boolean = { false },
-    private val onMotionEvent: (MotionEvent) -> Boolean = { false },
     private val content: @Composable () -> Unit
 ) : Presentation(activity, display), LifecycleOwner, SavedStateRegistryOwner {
 
@@ -47,6 +40,7 @@ class ComposePresentation(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window?.addFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
         setCancelable(false)
 
         savedStateRegistryController.performRestore(null)
@@ -64,16 +58,6 @@ class ComposePresentation(
             it.setViewTreeSavedStateRegistryOwner(this)
             it.setViewTreeViewModelStoreOwner(activity)
         }
-    }
-
-    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        if (onKeyEvent(event)) return true
-        return super.dispatchKeyEvent(event)
-    }
-
-    override fun dispatchGenericMotionEvent(event: MotionEvent): Boolean {
-        if (onMotionEvent(event)) return true
-        return super.dispatchGenericMotionEvent(event)
     }
 
     override fun onStart() {
